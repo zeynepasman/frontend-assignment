@@ -55,7 +55,7 @@ export default function CurrencyList() {
   const location = useLocation()
 
   const assetQuery: AssetRequestQueryParams = {
-    limit:10,
+    limit:100,
   };
 
   const exchangeQuery: ExcxhangeRatesRequestQueryParams = {
@@ -79,15 +79,15 @@ export default function CurrencyList() {
     Promise.all([
       getExchangeRates(`access_key=${exchangeQuery.accessKey}&target=${exchangeQuery.target}`),
       location && location.search ?
-        searchResult ?
-          fetchData(`search=${searchResult}&limit=${pagination.pageSize}&offset=${offset}`)
-          : fetchData(`limit=${pagination.pageSize}&offset=${offset}`)
+         fetchData(`limit=${pagination.pageSize}&offset=${offset}`)
         : fetchData(`limit=${assetQuery.limit}`)
     ]);
   }, []);
 
   useEffect(() => {
     if (response && exchangeRates) {
+      console.log(response)
+      setTotalCount(response.length);
       let dataWithExchangeRates:Array<Asset>=[];
       response.forEach(el => {
         let newObject = Object.assign(el, { price: exchangeRates[`${el.symbol}`] });
@@ -102,7 +102,7 @@ export default function CurrencyList() {
     setPagination({
       current: Number(params.current),
       pageSize: Number(params.limit),
-      total: searchResult ? response?.length : totalCount
+      total: searchResult ? totalCount : 100
     });
   }, [location,response]);
   
@@ -134,7 +134,7 @@ export default function CurrencyList() {
     history.push(`?page=${pagination.current}&limit=${pagination.pageSize}`); 
     let offset = (Number(pagination.current) - 1) * Number(pagination.pageSize);
     if (searchResult) {
-      fetchData(`search=${searchResult}&limit=${pagination.pageSize}&offset=${offset}`)
+      fetchData(`search=${searchResult}`)
     } 
     else {
         fetchData(`limit=${pagination.pageSize}&offset=${offset}`)
@@ -157,6 +157,7 @@ export default function CurrencyList() {
           </Col>
           <Col md={8}>
             <Filter
+              options={['Currency Exchange Rates Filter']}
               setFilter={setFilter}
             />
             <Modal

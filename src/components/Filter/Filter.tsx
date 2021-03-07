@@ -3,12 +3,14 @@ import { Space } from 'antd';
 import { DropdownMenu } from "../Dropdown/DropdownMenu";
 
 interface FilterProps{
-    setFilter: () => void
+    setFilter: () => void,
+    options: Array<string>
 }
-const Filter: FC<FilterProps> = ({ setFilter }) => {
+const Filter: FC<FilterProps> = ({ setFilter, options }) => {
+
         return (
         <Space>
-                <DropdownMenu onClick={setFilter} options={["Currency Exchange Rates"]} buttonName={'Filters'}></DropdownMenu>
+                <DropdownMenu onClick={setFilter} options={options} buttonName={'Filters'}></DropdownMenu>
         </Space>
     )
 }
